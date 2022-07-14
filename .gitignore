@@ -1,0 +1,67 @@
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+
+# Visual Studio Code
+.vscode
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Visual Studio 2015
+.vs/
+PublishProfiles
+/Bringo/Bringo.Web/internal-nlog.txt
+/Bringo/Bringo.Web/Uploads/Images
+/Bringo/Bringo.Web/AzonRegisters
+/Bringo/Bringo/packages
+/Bringo/Web/Bringo.Web/Uploads/RouteSheets/*.xlsx
+/Bringo/Web/Bringo.Web/App_Data/RouteSheets/*.xlsx
+/Bringo/Web/Bringo.Web/Uploads/*.xlsx
+/Bringo/Web/Bringo.Web/App_Data/Uploads/*.xlsx
+/Bringo/packages/*
+/Bringo/Web/Bringo.Web/App_Data/AzonRegisters/*.xlsx
+Bringo.Tests/packages/*
+/Bringo/Web/Bringo.Web/internal-nlog.txt
+/Bringo/Web/Bringo.Web/Uploads/DeliveriesReports/*.xlsx
+/Bringo/Web/Bringo.Web/Uploads/Images
+Bringo/ZTempConsoleApps/Bringo.TestingConsoleApp/packages/*
+
+# npm modules & bower components
+node_modules/
+bower_components/
+.tmp/
+Bringo/Web/Bringo.Web/Uploads/RouteSheets.zip
+/Bringo/Web/Bringo.Web/Uploads/ExcelImports/*
+/ng_src/.idea/*
+Bringo/Web/Bringo.Web/wwwroot/ngres/*
+Bringo/Web/Bringo.Web/App_Data/WarehouseImports/*
+.idea/*
+*/.idea/*
+/Bringo/Web/Bringo.Web/Uploads/CourierVirtualAccountReports/*.xlsx
+/Bringo/Web/Bringo.Web/Reports/*.xlsx
+*.kml
+Bringo/Web/Bringo.Web/App_Data/DataProtection/*
+Bringo/Web/Bringo.Web.Service/App_Data/GetDeliveriesReportCache/2021_1_1_2021_2_1.json
+Bringo/Web/Bringo.Web.Service/App_Data/DataProtection/key-ae5b0c2c-a43e-408e-8567-603883bd9acc.xml
+Bringo/Web/Bringo.Web.Service/.config/dotnet-tools.json
