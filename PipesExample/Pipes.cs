@@ -18,6 +18,19 @@ public static class Pipes
 
         return await continuer.Invoke(previousResult.Value);
     }
+    
+    public static async Task<Result<TOut>> Continue<TIn, TMiddle, TOut>(this Task<Result<TIn>> previousOperation, 
+        Func<TMiddle, Task<Result<TOut>>> continuer, Func<TIn, TMiddle> mapper)
+    {
+        var previousResult = await previousOperation;
+            
+        if (previousResult.IsNotCorrect)
+            return previousResult.Error;
+
+        var mapped = mapper.Invoke(previousResult.Value);
+            
+        return await continuer.Invoke(mapped);
+    }
         
     public static async Task<Result<TIn>> Skip<TIn>(this Task<Result<TIn>> previousOperation, 
         Func<TIn, Task> continuer)
@@ -31,17 +44,14 @@ public static class Pipes
 
         return previousResult;
     }
-        
-    public static async Task<Result<TOut>> Continue<TIn, TMiddle, TOut>(this Task<Result<TIn>> previousOperation, 
-        Func<TMiddle, Task<Result<TOut>>> continuer, Func<TIn, TMiddle> mapper)
-    {
-        var previousResult = await previousOperation;
-            
-        if (previousResult.IsNotCorrect)
-            return previousResult.Error;
 
-        var mapped = mapper.Invoke(previousResult.Value);
-            
-        return await continuer.Invoke(mapped);
+    public static async Task<Result<TIn>> Get<TIn>(this Task<Result<TIn>> previousOperation,
+        Action<TIn> setter)
+    {
+        var result = await previousOperation;
+        if(result.IsCorrect)
+            setter.Invoke(result.Value);
+
+        return result;
     }
 }

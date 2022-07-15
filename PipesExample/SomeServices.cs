@@ -16,7 +16,7 @@ public class UserService : IUserService
     public async Task<Result<User>> UserById(int userId)
     {
         await Task.Delay(100);
-        return new Result<User>(new User { Id = userId});
+        return new Result<User>(new User { Id = userId, Name = "Bob"});
     }
 }
 
