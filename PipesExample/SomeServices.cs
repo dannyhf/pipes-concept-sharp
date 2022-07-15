@@ -4,29 +4,34 @@ using PipesExample.Models;
 
 namespace PipesExample.Services;
 
-#region UserService
+#region Interfaces
 
 public interface IUserService
 {
     Task<Result<User>> UserById(int userId);
 }
-    
+
+public interface IRequestNotifier
+{
+    Task Notify(int requestId);
+}
+
+public interface IRequestService
+{
+    Task<Result<int>> CreateRequestBy(int userId);
+}
+
+#endregion
+
+#region Implementation
+
 public class UserService : IUserService
 {
     public async Task<Result<User>> UserById(int userId)
     {
         await Task.Delay(100);
-        return new Result<User>(new User { Id = userId, Name = "Bob"});
+        return new Result<User>(new User { Id = userId, Name = "Bob" });
     }
-}
-
-#endregion
-
-#region Request Service
-
-public interface IRequestService
-{
-    Task<Result<int>> CreateRequestBy(int userId);
 }
 
 public class RequestService : IRequestService
@@ -38,15 +43,6 @@ public class RequestService : IRequestService
     }
 }
 
-#endregion
-
-#region Notifier
-
-public interface IRequestNotifier
-{
-    Task Notify(int requestId);
-}
-
 public class RequestNotifier : IRequestNotifier
 {
     public async Task Notify(int requestId)
@@ -55,5 +51,4 @@ public class RequestNotifier : IRequestNotifier
         Console.WriteLine($"Request {requestId} was created!");
     }
 }
-
 #endregion
