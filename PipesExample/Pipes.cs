@@ -8,6 +8,24 @@ namespace PipesExample
     
     }
 
+    public class LinkingWrapper<T>
+    {
+        public bool IsLinked { get; }
+        public bool IsUnlinked => !IsLinked;
+        public T Value { get; }
+        
+        public LinkingWrapper(T value)
+        {
+            Value = value;
+            IsLinked = true;
+        }
+        
+        public LinkingWrapper()
+        {
+            IsLinked = false;
+        }
+    }
+
     public static class Pipes
     {
         public static async Task<Result<TOut>> Start<TOut, TIn>(this TIn value, Func<TIn, Task<Result<TOut>>> continuer) => 
@@ -38,14 +56,29 @@ namespace PipesExample
         }
         
         public static async Task<Result<TIn>> Skip<TIn>(this Task<Result<TIn>> previousOperation, 
-            Func<TIn, Task> continuer)
+            Func<TIn, Task> invokable)
         {
             var previousResult = await previousOperation;
             
             if (previousResult.IsNotCorrect)
                 return new Result<TIn>(previousResult.Error);
 
-            await continuer.Invoke(previousResult.Value);
+            await invokable.Invoke(previousResult.Value);
+
+            return previousResult;
+        }
+        
+        public static async Task<Result<TIn>> Skip<TIn, TUnimportant>(this Task<Result<TIn>> previousOperation, 
+            Func<TIn, Task<Result<TUnimportant>>> invokable)
+        {
+            var previousResult = await previousOperation;
+            
+            if (previousResult.IsNotCorrect)
+                return new Result<TIn>(previousResult.Error);
+
+            var invocationResult = await invokable.Invoke(previousResult.Value);
+            if(invocationResult.IsNotCorrect)
+                return new Result<TIn>(invocationResult.Error);
 
             return previousResult;
         }

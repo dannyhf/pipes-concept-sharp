@@ -19,7 +19,11 @@ namespace PipesExample
                 .Continue(_requestService.CreateRequestBy, u => u.Id)
                 .Skip(_notifier.Notify);
 
-            Console.WriteLine(result.Value);
+            if(result.IsCorrect)
+                Console.WriteLine(result.Value);
+            else
+                Console.WriteLine(result.Error);
+            
             Console.WriteLine(user.Name);
         }
     }
