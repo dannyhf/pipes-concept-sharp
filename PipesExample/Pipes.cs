@@ -1,57 +1,63 @@
 using System;
 using System.Threading.Tasks;
 
-namespace PipesExample.Pipes;
-
-public static class Pipes
+namespace PipesExample
 {
-    public static async Task<Result<TOut>> Start<TOut, TIn>(this TIn value, Func<TIn, Task<Result<TOut>>> continuer) => 
-        await continuer.Invoke(value);
-        
-    public static async Task<Result<TOut>> Continue<TOut, TIn>(this Task<Result<TIn>> previousOperation, 
-        Func<TIn, Task<Result<TOut>>> continuer)
+    public class PipelineBuilder
     {
-        var previousResult = await previousOperation;
-            
-        if (previousResult.IsNotCorrect)
-            return previousResult.Error;
-
-        return await continuer.Invoke(previousResult.Value);
-    }
     
-    public static async Task<Result<TOut>> Continue<TIn, TMiddle, TOut>(this Task<Result<TIn>> previousOperation, 
-        Func<TMiddle, Task<Result<TOut>>> continuer, Func<TIn, TMiddle> mapper)
-    {
-        var previousResult = await previousOperation;
-            
-        if (previousResult.IsNotCorrect)
-            return previousResult.Error;
-
-        var mapped = mapper.Invoke(previousResult.Value);
-            
-        return await continuer.Invoke(mapped);
     }
+
+    public static class Pipes
+    {
+        public static async Task<Result<TOut>> Start<TOut, TIn>(this TIn value, Func<TIn, Task<Result<TOut>>> continuer) => 
+            await continuer.Invoke(value);
         
-    public static async Task<Result<TIn>> Skip<TIn>(this Task<Result<TIn>> previousOperation, 
-        Func<TIn, Task> continuer)
-    {
-        var previousResult = await previousOperation;
+        public static async Task<Result<TOut>> Continue<TOut, TIn>(this Task<Result<TIn>> previousOperation, 
+            Func<TIn, Task<Result<TOut>>> continuer)
+        {
+            var previousResult = await previousOperation;
             
-        if (previousResult.IsNotCorrect)
-            return previousResult.Error;
+            if (previousResult.IsNotCorrect)
+                return new Result<TOut>(previousResult.Error);
 
-        await continuer.Invoke(previousResult.Value);
+            return await continuer.Invoke(previousResult.Value);
+        }
+    
+        public static async Task<Result<TOut>> Continue<TIn, TMiddle, TOut>(this Task<Result<TIn>> previousOperation, 
+            Func<TMiddle, Task<Result<TOut>>> continuer, Func<TIn, TMiddle> mapper)
+        {
+            var previousResult = await previousOperation;
+            
+            if (previousResult.IsNotCorrect)
+                return new Result<TOut>(previousResult.Error);
 
-        return previousResult;
-    }
+            var mapped = mapper.Invoke(previousResult.Value);
+            
+            return await continuer.Invoke(mapped);
+        }
+        
+        public static async Task<Result<TIn>> Skip<TIn>(this Task<Result<TIn>> previousOperation, 
+            Func<TIn, Task> continuer)
+        {
+            var previousResult = await previousOperation;
+            
+            if (previousResult.IsNotCorrect)
+                return new Result<TIn>(previousResult.Error);
 
-    public static async Task<Result<TIn>> Get<TIn>(this Task<Result<TIn>> previousOperation,
-        Action<TIn> setter)
-    {
-        var result = await previousOperation;
-        if(result.IsCorrect)
-            setter.Invoke(result.Value);
+            await continuer.Invoke(previousResult.Value);
 
-        return result;
+            return previousResult;
+        }
+
+        public static async Task<Result<TIn>> Get<TIn>(this Task<Result<TIn>> previousOperation,
+            Action<TIn> setter)
+        {
+            var result = await previousOperation;
+            if(result.IsCorrect)
+                setter.Invoke(result.Value);
+
+            return result;
+        }
     }
 }

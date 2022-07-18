@@ -1,62 +1,26 @@
-﻿using System.Diagnostics;
-
-namespace PipesExample;
-
-[DebuggerDisplay("[IsCorrect: {IsCorrect}]{Error}")]
-public class Result
+﻿namespace PipesExample
 {
-	public Error Error { get; set; }
-
-	public bool IsCorrect => Error == null;
-	public bool IsNotCorrect => !IsCorrect;
-		
-	public static implicit operator Result(MiErrorCodes error) => new Result(Error.FromCode(error));
-	public static implicit operator Result(Error error) => new Result(error);
-
-	public Result(Error error)
+	public class Result
 	{
-		Error = error;
-	}
-}
+		public string Error { get; }
 
-[DebuggerDisplay("[IsCorrect: {IsCorrect}][Result: {Value}]{Error}")]
-public class Result<T> : Result
-{
-	public Result(Error error) : base(error)
-	{
-	}
+		public bool IsCorrect => Error == null;
+		public bool IsNotCorrect => !IsCorrect;
 
-	public Result(T value) : base(null)
-	{
-		Value = value;
-	}
-		
-	public T Value { get; set; }
-
-	public static implicit operator Result<T>(MiErrorCodes error) => new Result<T>(Error.FromCode(error));
-	public static implicit operator Result<T>(Error error) => new Result<T>(error);
-}
-	
-[DebuggerDisplay("[Code: {Code}][{Message}]")]
-public class Error
-{
-	public MiErrorCodes Code { get; set; }
-
-	public string Message { get; set; }
-
-	public static implicit operator Error(MiErrorCodes error) => FromCode(error);
-	public static implicit operator Error(Result result) => result.Error;
-
-	public static Error FromCode(MiErrorCodes code, string message = null)
-	{
-		return new Error
+		public Result(string error)
 		{
-			Code = code,
-			Message = message ?? "ERROR"
-		};
+			Error = error;
+		}
 	}
-}
-public enum MiErrorCodes
-{
-	Error = 1
+
+	public class Result<T> : Result
+	{
+		public Result(string error) : base(error)
+		{ }
+
+		public Result(T value) : base(null)
+		{ Value = value; }
+		
+		public T Value { get; }
+	}
 }

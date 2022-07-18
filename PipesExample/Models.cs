@@ -1,7 +1,8 @@
-namespace PipesExample.Models;
-
-public class User
+namespace PipesExample
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
+    public class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }
